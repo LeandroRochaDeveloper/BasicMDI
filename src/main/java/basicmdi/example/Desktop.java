@@ -5,8 +5,17 @@
  */
 package basicmdi.example;
 
+import basicmdi.util.AppConstants;
+import java.awt.AWTException;
 import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.Image;
+import java.awt.MenuItem;
+import java.awt.PopupMenu;
+import java.awt.SystemTray;
+import java.awt.Toolkit;
+import java.awt.TrayIcon;
+import java.awt.event.ActionEvent;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultDesktopManager;
@@ -17,16 +26,29 @@ import javax.swing.UnsupportedLookAndFeelException;
 
 /**
  *
- * @author Leandro
+ * @author Leandro Rocha
  */
 public class Desktop extends javax.swing.JFrame {    
+    // JInternal Frames
     private final InternalFrame tela;
+    // System tray
+    private final String appName = AppConstants.APP_NAME;
+    private Image appLogoIcon;
+    private SystemTray sysTray;
+    private PopupMenu trayMenu;
+    private MenuItem trayItemExit;
+    private TrayIcon trayIcon;
+    private MenuItem trayItemShowApp;
     /**
      * Creates new form ArduinoDesktop
+     * 
+     * Quando pressionado o botão de fechar, ele irá minimizar para a tray (hide on close).
      */
     public Desktop() {
         initComponents();
         tela = new InternalFrame(desktopPane);     
+        /* Configura a tray */
+        tray();
         /* Não permitir que as jinternalframes 'fujam' da tela */
         desktopPane.setDesktopManager(new BoundedDesktopManager());
         /* Confgura a tela para ser exibida em fullscreen */
@@ -51,8 +73,6 @@ public class Desktop extends javax.swing.JFrame {
         exitMenuItem = new javax.swing.JMenuItem();
         helpMenu = new javax.swing.JMenu();
         aboutMenuItem = new javax.swing.JMenuItem();
-
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         desktopPane.setBackground(new java.awt.Color(51, 153, 255));
 
@@ -116,7 +136,7 @@ public class Desktop extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void exitMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitMenuItemActionPerformed
-        byte resp = (byte) JOptionPane.showConfirmDialog(this, "Deseja realmente sair?", "", JOptionPane.YES_NO_OPTION);
+        byte resp = (byte) JOptionPane.showConfirmDialog(this, "Deseja sair?", "Aviso", JOptionPane.YES_NO_OPTION);
         switch (resp) {
             case 0:
                 System.exit(0);
@@ -140,7 +160,7 @@ public class Desktop extends javax.swing.JFrame {
     public static void main(String args[]) {
         /* Look and feel */
         try {
-            // Work here
+            // Windows <3
             String sun_desktop = System.getProperty("sun.desktop");
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
                 if (sun_desktop.equalsIgnoreCase(info.getName())) {
@@ -164,6 +184,58 @@ public class Desktop extends javax.swing.JFrame {
             }
         });
     }
+    
+    /**
+     * Metodo que configura a system tray
+     */
+    public final void tray() {
+        //check to see if system tray is supported on OS.
+        if (SystemTray.isSupported()) {
+            sysTray = SystemTray.getSystemTray();
+            //create logo icon image
+            appLogoIcon = Toolkit.getDefaultToolkit().getImage(AppConstants.LOGO_PATH);// size: (16x16)
+            //create popupmenu
+            trayMenu = new PopupMenu();
+            //create item
+            trayItemExit = new MenuItem(AppConstants.TRAY_OPTIONS[1]);
+
+            // Item to show the app
+            trayItemShowApp = new MenuItem(AppConstants.TRAY_OPTIONS[0]);
+            //add actionListener to second trayMenu item
+            trayItemShowApp.addActionListener(new java.awt.event.ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    setVisible(true);
+                }
+            });
+            //add second item to popup trayMenu
+            trayMenu.add(trayItemShowApp);
+            //add item to trayMenu
+            trayMenu.add(trayItemExit);
+            //add action listener to the item in the popup trayMenu
+            trayItemExit.addActionListener(new java.awt.event.ActionListener() {
+                @Override
+                public void actionPerformed(java.awt.event.ActionEvent e) {
+                    // Verifico se o usuÃ¡rio realmente quer fechar o aplicativo.
+                    byte resp = (byte) JOptionPane.showConfirmDialog(null, "Deseja sair?", "Aviso", JOptionPane.YES_NO_OPTION);
+                    switch (resp) {
+                        case 0:// Caso ele realmente queira.
+                            System.exit(0);
+                            break;
+                    }
+                }
+            });
+            //create system tray icon.
+            trayIcon = new TrayIcon(appLogoIcon, appName, trayMenu);
+            //add the tray icon to the system tray.
+            try {
+                sysTray.add(trayIcon);
+            } catch (AWTException e) {
+                System.out.println(e.getMessage());
+            }
+        }
+
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem aboutMenuItem;
@@ -176,6 +248,7 @@ public class Desktop extends javax.swing.JFrame {
     private javax.swing.JMenuItem openMenuItem;
     private javax.swing.JMenuItem saveMenuItem;
     // End of variables declaration//GEN-END:variables
+    
     public class BoundedDesktopManager extends DefaultDesktopManager {
     // Fonte: http://stackoverflow.com/questions/8136944/preventing-jinternalframe-from-being-moved-out-of-a-jdesktoppane
         @Override

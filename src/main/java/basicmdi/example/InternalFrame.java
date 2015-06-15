@@ -9,7 +9,7 @@ import javax.swing.JDesktopPane;
 
 /**
  *
- * @author Leandro
+ * @author Leandro Rocha
  */
 public class InternalFrame extends javax.swing.JInternalFrame {
 
