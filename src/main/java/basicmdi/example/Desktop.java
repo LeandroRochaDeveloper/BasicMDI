@@ -9,6 +9,7 @@ import basicmdi.util.AppConstants;
 import java.awt.AWTException;
 import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.MenuItem;
 import java.awt.PopupMenu;
@@ -16,10 +17,15 @@ import java.awt.SystemTray;
 import java.awt.Toolkit;
 import java.awt.TrayIcon;
 import java.awt.event.ActionEvent;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.imageio.ImageIO;
 import javax.swing.DefaultDesktopManager;
 import javax.swing.JComponent;
+import javax.swing.JDesktopPane;
 import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -39,6 +45,8 @@ public class Desktop extends javax.swing.JFrame {
     private MenuItem trayItemExit;
     private TrayIcon trayIcon;
     private MenuItem trayItemShowApp;
+    // Background do JDesktopPane
+    private BufferedImage background_image;
     /**
      * Creates new form ArduinoDesktop
      * 
@@ -49,6 +57,31 @@ public class Desktop extends javax.swing.JFrame {
         tela = new InternalFrame(desktopPane);     
         /* Configura a tray */
         tray();
+        /* Configura imagens da aplicacao */
+         try {
+             // Icone da aplicacao
+            setIconImage(Toolkit.getDefaultToolkit().getImage(AppConstants.LOGO_PATH));     
+            // Background do JDesktopPane
+            background_image = ImageIO.read(new File(AppConstants.BACKGROUND_IMAGE));
+            /*
+            Para configurar a imagem no bg, devesse ir em "Propriedades" > 
+                "Codigo" > "Codigo de Criacao Personalizado" do JDesktopPane
+            new JDesktopPane() {
+                @Override protected void paintComponent(Graphics grphcs) { 
+                    super.paintComponent(grphcs); 
+                    grphcs.drawImage(background_image, 0, 0, null);
+                } 
+                @Override public Dimension getPreferredSize() { 
+                    return new Dimension(background_image.getWidth(), background_image.getHeight());
+                }
+            };
+            */
+         } catch (java.lang.ExceptionInInitializerError | NullPointerException e) {
+            System.err.println(e.getCause());
+         } catch (IOException ex) {
+            Logger.getLogger(Desktop.class.getName()).log(Level.SEVERE, null, ex);
+        }
+         
         /* Não permitir que as jinternalframes 'fujam' da tela */
         desktopPane.setDesktopManager(new BoundedDesktopManager());
         /* Confgura a tela para ser exibida em fullscreen */
@@ -64,7 +97,7 @@ public class Desktop extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        desktopPane = new javax.swing.JDesktopPane();
+        desktopPane = new JDesktopPane() {@Override protected void paintComponent(Graphics grphcs) { super.paintComponent(grphcs); grphcs.drawImage(background_image, 0, 0, null);} @Override public Dimension getPreferredSize() { return new Dimension(background_image.getWidth(), background_image.getHeight());}};
         menuBar = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
         openMenuItem = new javax.swing.JMenuItem();
