@@ -9,7 +9,6 @@ import basicmdi.util.AppConstants;
 import java.awt.AWTException;
 import java.awt.Container;
 import java.awt.Dimension;
-import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.MenuItem;
 import java.awt.PopupMenu;
@@ -17,15 +16,10 @@ import java.awt.SystemTray;
 import java.awt.Toolkit;
 import java.awt.TrayIcon;
 import java.awt.event.ActionEvent;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.imageio.ImageIO;
 import javax.swing.DefaultDesktopManager;
 import javax.swing.JComponent;
-import javax.swing.JDesktopPane;
 import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -34,13 +28,9 @@ import javax.swing.UnsupportedLookAndFeelException;
  *
  * @author Leandro Rocha
  */
-public class Desktop extends javax.swing.JFrame {
-
+public class Desktop extends javax.swing.JFrame {    
     // JInternal Frames
-
     private final InternalFrame tela;
-    // Imagem no background do JDesktopPane
-    private BufferedImage background_image;
     // System tray
     private final String appName = AppConstants.APP_NAME;
     private Image appLogoIcon;
@@ -49,39 +39,16 @@ public class Desktop extends javax.swing.JFrame {
     private MenuItem trayItemExit;
     private TrayIcon trayIcon;
     private MenuItem trayItemShowApp;
-// @Override protected void paintComponent(Graphics grphcs) {super.paintComponent(grphcs);grphcs.drawImage(img, 0, 0, null);}@Override public Dimension getPreferredSize() {return new Dimension(img.getWidth(), img.getHeight());}
     /**
      * Creates new form ArduinoDesktop
-     *
-     * Quando pressionado o botão de fechar, ele irá minimizar para a tray (hide
-     * on close).
+     * 
+     * Quando pressionado o botão de fechar, ele irá minimizar para a tray (hide on close).
      */
     public Desktop() {
         initComponents();
-        tela = new InternalFrame(desktopPane);
+        tela = new InternalFrame(desktopPane);     
         /* Configura a tray */
         tray();
-        /* Configurar imagens. */
-        try {
-            // Icone da aplicacao 
-            // Toolkit.getDefaultToolkit().getImage(AppConstants.LOGO_PATH)
-            setIconImage(Toolkit.getDefaultToolkit().getImage(AppConstants.LOGO_ICON));
-            // Background 
-            background_image = ImageIO.read(new File(AppConstants.BACKGROUND_PATH));
-            /*
-            Adicione o seguinte codigo em "Propriedades" > "Codigo" > "Codigo de Criacao Personalizado"
-            new JDesktopPane() {
-            @Override protected void paintComponent(Graphics grphcs) { 
-                super.paintComponent(grphcs); grphcs.drawImage(background_image, 0, 0, null);
-            } 
-            @Override public Dimension getPreferredSize() { 
-                return new Dimension(background_image.getWidth(), background_image.getHeight());
-            }
-            };
-            */
-        } catch (java.lang.ExceptionInInitializerError | NullPointerException | IOException ex) {
-            Logger.getLogger(Desktop.class.getName()).log(Level.SEVERE, null, ex);
-        } 
         /* Não permitir que as jinternalframes 'fujam' da tela */
         desktopPane.setDesktopManager(new BoundedDesktopManager());
         /* Confgura a tela para ser exibida em fullscreen */
@@ -97,7 +64,7 @@ public class Desktop extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        desktopPane = new JDesktopPane() {@Override protected void paintComponent(Graphics grphcs) { super.paintComponent(grphcs); grphcs.drawImage(background_image, 0, 0, null);} @Override public Dimension getPreferredSize() { return new Dimension(background_image.getWidth(), background_image.getHeight());}};
+        desktopPane = new javax.swing.JDesktopPane();
         menuBar = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
         openMenuItem = new javax.swing.JMenuItem();
@@ -217,7 +184,7 @@ public class Desktop extends javax.swing.JFrame {
             }
         });
     }
-
+    
     /**
      * Metodo que configura a system tray
      */
@@ -281,11 +248,9 @@ public class Desktop extends javax.swing.JFrame {
     private javax.swing.JMenuItem openMenuItem;
     private javax.swing.JMenuItem saveMenuItem;
     // End of variables declaration//GEN-END:variables
-
+    
     public class BoundedDesktopManager extends DefaultDesktopManager {
-
-        // Fonte: http://stackoverflow.com/questions/8136944/preventing-jinternalframe-from-being-moved-out-of-a-jdesktoppane
-
+    // Fonte: http://stackoverflow.com/questions/8136944/preventing-jinternalframe-from-being-moved-out-of-a-jdesktoppane
         @Override
         public void beginDraggingFrame(JComponent f) {
             // Don't do anything. Needed to prevent the DefaultDesktopManager setting the dragMode
