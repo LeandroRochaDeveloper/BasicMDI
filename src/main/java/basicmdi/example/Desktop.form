@@ -97,6 +97,9 @@
           <Color blue="ff" green="99" red="33" type="rgb"/>
         </Property>
       </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new JDesktopPane() {@Override protected void paintComponent(Graphics grphcs) { super.paintComponent(grphcs); grphcs.drawImage(background_image, 0, 0, null);} @Override public Dimension getPreferredSize() { return new Dimension(background_image.getWidth(), background_image.getHeight());}};"/>
+      </AuxValues>
 
       <Layout class="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout">
         <Property name="useNullLayout" type="boolean" value="true"/>
