@@ -5,30 +5,66 @@
  */
 package basicmdi.example;
 
+import java.awt.Dimension;
 import javax.swing.JDesktopPane;
+import javax.swing.SwingConstants;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.JTableHeader;
+import javax.swing.table.TableColumnModel;
 
 /**
  *
  * @author Leandro Rocha
  */
 public class InternalFrame extends javax.swing.JInternalFrame {
-
-    private JDesktopPane desktop;
     
+    private JDesktopPane desktop;
+    // Colunas da tabela
+    private final byte COLUMN_NAME = 0;
+    private final byte COLUMN_RFID = 1;
+    private final byte COLUMN_ID = 2;
+    private final byte COLUMN_CHECK = 3;
+    // Porque, as vezes, o Java e chato.
+    private static final long serialVersionUID = 1L;
+
     /**
      * Creates new form InternalFrame
      */
     public InternalFrame() {
         initComponents();
     }
+
     /**
      * Creates new form InternalFrame
+     *
      * @param desktop
      */
     public InternalFrame(JDesktopPane desktop) {
         initComponents();
         this.desktop = desktop;
         desktop.add(this);
+
+        // Arruma os tamanhos das colunas na tabela
+        DefaultTableCellRenderer rendererCentro = new DefaultTableCellRenderer();
+        rendererCentro.setHorizontalAlignment(SwingConstants.CENTER);
+        DefaultTableCellRenderer rendererEsquerda = new DefaultTableCellRenderer();
+        rendererEsquerda.setHorizontalAlignment(SwingConstants.LEFT);
+        DefaultTableCellRenderer rendererDireita = new DefaultTableCellRenderer();// So para constar
+        rendererCentro.setHorizontalAlignment(SwingConstants.RIGHT);
+        JTableHeader header = table.getTableHeader();
+        header.setPreferredSize(new Dimension(0, 50)); // define a largura do cabeçalho 
+        TableColumnModel modeloDaColuna = table.getColumnModel();
+        modeloDaColuna.getColumn(COLUMN_NAME).setCellRenderer(rendererEsquerda);
+        modeloDaColuna.getColumn(COLUMN_RFID).setCellRenderer(rendererEsquerda);
+        modeloDaColuna.getColumn(COLUMN_ID).setCellRenderer(rendererCentro);
+        modeloDaColuna.getColumn(COLUMN_CHECK).setCellRenderer(rendererCentro);
+        modeloDaColuna.getColumn(COLUMN_NAME).setMaxWidth(450);
+        modeloDaColuna.getColumn(COLUMN_RFID).setMaxWidth(450);
+        modeloDaColuna.getColumn(COLUMN_ID).setMaxWidth(100);
+        modeloDaColuna.getColumn(COLUMN_CHECK).setMaxWidth(25);
+        // Recolocar os checkboxes
+        modeloDaColuna.getColumn(COLUMN_CHECK).setCellEditor(table.getDefaultEditor(Boolean.class));     
+        modeloDaColuna.getColumn(COLUMN_CHECK).setCellRenderer(table.getDefaultRenderer(Boolean.class));
     }
 
     /**
@@ -40,18 +76,48 @@ public class InternalFrame extends javax.swing.JInternalFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jScrollPane1 = new javax.swing.JScrollPane();
+        table = new javax.swing.JTable();
+
         setClosable(true);
         setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
+
+        table.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", ""
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Boolean.class
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+        });
+        jScrollPane1.setViewportView(table);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 394, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 385, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 274, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 402, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(56, Short.MAX_VALUE))
         );
 
         pack();
@@ -59,5 +125,7 @@ public class InternalFrame extends javax.swing.JInternalFrame {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTable table;
     // End of variables declaration//GEN-END:variables
 }
