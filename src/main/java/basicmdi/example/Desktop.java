@@ -36,7 +36,7 @@ import javax.swing.UnsupportedLookAndFeelException;
  */
 public class Desktop extends javax.swing.JFrame {    
     // JInternal Frames
-    private final InternalFrame tela;
+    private InternalFrame tela;
     // System tray
     private final String appName = AppConstants.APP_NAME;
     private Image appLogoIcon;
@@ -54,7 +54,6 @@ public class Desktop extends javax.swing.JFrame {
      */
     public Desktop() {
         initComponents();
-        tela = new InternalFrame(desktopPane);     
         /* Configura a tray */
         tray();
         /* Configura imagens da aplicacao */
@@ -85,7 +84,7 @@ public class Desktop extends javax.swing.JFrame {
         /* Não permitir que as jinternalframes 'fujam' da tela */
         desktopPane.setDesktopManager(new BoundedDesktopManager());
         /* Confgura a tela para ser exibida em fullscreen */
-        setExtendedState(this.MAXIMIZED_BOTH);// Tela inicia fullscreeam.
+        setExtendedState(this.MAXIMIZED_BOTH);// Tela inicia fullscreeam.          
     }
 
     /**
@@ -183,7 +182,8 @@ public class Desktop extends javax.swing.JFrame {
     }//GEN-LAST:event_aboutMenuItemActionPerformed
 
     private void openMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openMenuItemActionPerformed
-        // TODO add your handling code here:
+        // TODO add your handling code here:      
+        tela = new InternalFrame(desktopPane);   
         tela.setVisible(true);
     }//GEN-LAST:event_openMenuItemActionPerformed
 

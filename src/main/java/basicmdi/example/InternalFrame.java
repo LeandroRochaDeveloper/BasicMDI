@@ -43,7 +43,14 @@ public class InternalFrame extends javax.swing.JInternalFrame {
         initComponents();
         this.desktop = desktop;
         desktop.add(this);
-
+        /* Centralizar no JDesktopPane 
+        Note que esse codigo funciona devido a criacao do JInternalFrame ocorrer fora do construtor, 
+        no evento do JMenuItem. Se fosse no contrutor, os parametros do Dimension seriam diferentes pois
+        a tela ainda nao esta fullscreen, saca? So apos a execucao completa do construtor.
+        */
+        Dimension d = desktop.getRootPane().getSize();  
+        Dimension d2 = this.getSize();
+        this.setLocation((d.width - d2.width) / 2, d2.height / 4); 
         // Arruma os tamanhos das colunas na tabela
         DefaultTableCellRenderer rendererCentro = new DefaultTableCellRenderer();
         rendererCentro.setHorizontalAlignment(SwingConstants.CENTER);
@@ -65,8 +72,9 @@ public class InternalFrame extends javax.swing.JInternalFrame {
         // Recolocar os checkboxes
         modeloDaColuna.getColumn(COLUMN_CHECK).setCellEditor(table.getDefaultEditor(Boolean.class));     
         modeloDaColuna.getColumn(COLUMN_CHECK).setCellRenderer(table.getDefaultRenderer(Boolean.class));
+        
     }
-
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
